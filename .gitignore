@@ -1,0 +1,15 @@
+!.mvn/wrapper/maven-wrapper.jar
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.class
+
+build/
+dist/
+target/
+bin/
