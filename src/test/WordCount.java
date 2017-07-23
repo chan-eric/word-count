@@ -1,3 +1,5 @@
+package test;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,14 +25,27 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 public class WordCount extends Configured implements Tool {
+	
 	private final static LongWritable ONE = new LongWritable(1L);
 
+	public static void main(String[] args) throws Exception {
+		int res = ToolRunner.run(new Configuration(), new WordCount(), args);
+		System.exit(res);
+	}
+	
 	static int printUsage() {
 		System.out.println("wordcount [-m #mappers ] [-r #reducers] input_file output_file");
 		ToolRunner.printGenericCommandUsage(System.out);
 		return -1;
 	}
 
+	
+	  /**
+	   * The main driver for word count map/reduce program.
+	   * Invoke this method to submit the map/reduce job.
+	   * @throws IOException When there is communication problems with the 
+	   *                     job tracker.
+	   */
 	public int run(String[] args) throws Exception {
 
 		JobConf conf = new JobConf(getConf(), WordCount.class);
@@ -75,12 +90,12 @@ public class WordCount extends Configured implements Tool {
 		JobClient.runJob(conf);
 		return 0;
 	}
-
-	public static void main(String[] args) throws Exception {
-		int res = ToolRunner.run(new Configuration(), new WordCount(), args);
-		System.exit(res);
-	}
-
+	
+	/**
+	   * Counts the words in each line.
+	   * For each line of input, break the line into words and emit them as
+	   * (<b>word</b>, <b>1</b>).
+	   */
 	public static class MapClass extends MapReduceBase implements Mapper<LongWritable, Text, Text, IntWritable> {
 		private final static IntWritable one = new IntWritable(1);
 		private Text word = new Text();
@@ -99,6 +114,9 @@ public class WordCount extends Configured implements Tool {
 
 	}
 
+	/**
+	   * A reducer class that just emits the sum of the input values.
+	   */
 	public static class Reduce extends MapReduceBase implements Reducer<Text, IntWritable, Text, IntWritable> {
 
 		@Override
